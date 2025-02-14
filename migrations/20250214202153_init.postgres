@@ -47,6 +47,7 @@ INSERT INTO merch (name, price) VALUES
 
 -- +goose Down
 -- +goose StatementBegin
+DROP INDEX IF EXISTS idx_purchase_user_id
 DROP INDEX IF EXISTS idx_merch_name;
 DROP INDEX IF EXISTS idx_coins_transaction_receiver_id;
 DROP INDEX IF EXISTS idx_coins_transaction_sender_id;
