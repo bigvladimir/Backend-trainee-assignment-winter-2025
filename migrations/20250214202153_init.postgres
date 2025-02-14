@@ -1,0 +1,58 @@
+-- +goose Up
+-- +goose StatementBegin
+CREATE TABLE user (
+    id SERIAL PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    balance INT NOT NULL
+);
+CREATE INDEX idx_user_username ON user(username);
+
+CREATE TABLE coins_transaction (
+    id SERIAL PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    amount INT NOT NULL,
+    created_at TIMESTAMP NOT NULL
+);
+CREATE INDEX idx_coins_transaction_sender_id ON coins_transaction(sender_id);
+CREATE INDEX idx_coins_transaction_receiver_id ON coins_transaction(receiver_id);
+
+CREATE TABLE merch (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    price INT NOT NULL
+);
+CREATE INDEX idx_merch_name ON merch(name);
+
+CREATE TABLE purchases (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    merch_id INT NOT NULL,
+    purchased_at TIMESTAMP NOT NULL
+);
+
+INSERT INTO merch (name, price) VALUES
+('t-shirt', 80),
+('cup', 20),
+('book', 50),
+('pen', 10),
+('powerbank', 200),
+('hoody', 300),
+('umbrella', 200),
+('socks', 10),
+('wallet', 50),
+('pink-hoody', 500);
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+DROP INDEX IF EXISTS idx_merch_name;
+DROP INDEX IF EXISTS idx_coins_transaction_receiver_id;
+DROP INDEX IF EXISTS idx_coins_transaction_sender_id;
+DROP INDEX IF EXISTS idx_user_username;
+
+DROP TABLE IF EXISTS purchases;
+DROP TABLE IF EXISTS merch;
+DROP TABLE IF EXISTS coins_transaction;
+DROP TABLE IF EXISTS user;
+-- +goose StatementEnd
