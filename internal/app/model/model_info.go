@@ -1,7 +1,6 @@
 package model
 
 type InfoResponse struct {
-	// Количество доступных монет.
 	Coins       int                      `json:"coins,omitempty"`
 	Inventory   []InfoResponseInventory  `json:"inventory,omitempty"`
 	CoinHistory *InfoResponseCoinHistory `json:"coinHistory,omitempty"`

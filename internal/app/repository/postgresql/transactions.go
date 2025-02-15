@@ -24,7 +24,19 @@ func (s *ServiceStorage) GetMerchIDbyName(ctx context.Context, name string) (int
 	return id, nil
 }
 
-func (s *ServiceStorage) AddPurchase(ctx context.Context, input model.PurchaseRequest) error {
+func (s *ServiceStorage) GetMerchPricebyID(ctx context.Context, id int) (int, error) {
+	var price int
+	err := s.qe.GetQueryEngine(ctx).Get(ctx, &price, "SELECT price FROM merch WHERE id=$1", id)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return 0, rep_errors.ErrNotFound
+		}
+		return 0, fmt.Errorf("GetMerchPricebyID SELECT query: %w", err)
+	}
+	return price, nil
+}
+
+func (s *ServiceStorage) AddPurchase(ctx context.Context, input model.SavePurchaseRequest) error {
 	var pur repository.Purchase
 	pur.MapFromPurchaseServiceModel(input)
 	_, err := s.qe.GetQueryEngine(ctx).Exec(ctx, "INSERT INTO purchase(user_id, merch_id) VALUES ($1, $2)", pur.UserID, pur.MerchID)
@@ -34,7 +46,7 @@ func (s *ServiceStorage) AddPurchase(ctx context.Context, input model.PurchaseRe
 	return nil
 }
 
-func (s *ServiceStorage) AddTransaction(ctx context.Context, input model.SaveTransactionRequest) error {
+func (s *ServiceStorage) AddCoinTransaction(ctx context.Context, input model.SaveTransactionRequest) error {
 	var tr repository.SaveTransaction
 	tr.MapFromSaveTransactionServiceModel(input)
 	_, err := s.qe.GetQueryEngine(ctx).Exec(

@@ -1,6 +1,7 @@
 package model
 
 type SendCoinRequest struct {
+	SenderID int
 	// Имя пользователя, которому нужно отправить монеты.
 	ToUser string `json:"toUser"`
 	// Количество монет, которые необходимо отправить.
@@ -14,6 +15,11 @@ type SaveTransactionRequest struct {
 }
 
 type PurchaseRequest struct {
+	UserID int
+	Type_  string
+}
+
+type SavePurchaseRequest struct {
 	UserID  int
 	MerchID int
 }

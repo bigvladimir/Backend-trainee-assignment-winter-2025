@@ -37,7 +37,7 @@ type Purchase struct {
 	MerchID int
 }
 
-func (p *Purchase) MapFromPurchaseServiceModel(u model.PurchaseRequest) {
+func (p *Purchase) MapFromPurchaseServiceModel(u model.SavePurchaseRequest) {
 	p.UserID = u.UserID
 	p.MerchID = u.MerchID
 }
