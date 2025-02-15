@@ -2,35 +2,37 @@
 -- +goose StatementBegin
 CREATE TABLE user (
     id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
     balance INT NOT NULL
 );
+CREATE INDEX idx_user_username ON user(id);
 CREATE INDEX idx_user_username ON user(username);
 
 CREATE TABLE coins_transaction (
     id SERIAL PRIMARY KEY,
     sender_id INT NOT NULL,
     receiver_id INT NOT NULL,
-    amount INT NOT NULL,
-    created_at TIMESTAMP NOT NULL
+    amount INT NOT NULL
 );
 CREATE INDEX idx_coins_transaction_sender_id ON coins_transaction(sender_id);
 CREATE INDEX idx_coins_transaction_receiver_id ON coins_transaction(receiver_id);
 
 CREATE TABLE merch (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
+    name TEXT UNIQUE NOT NULL,
     price INT NOT NULL
 );
-CREATE INDEX idx_merch_name ON merch(name);
+CREATE INDEX idx_merch_id ON merch(id);
+CREATE INDEX idx_merch_id ON merch(name);
 
 CREATE TABLE purchase (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    merch_id INT NOT NULL,
-    purchased_at TIMESTAMP NOT NULL
+    merch_id INT NOT NULL
 );
 CREATE INDEX idx_purchase_user_id ON purchase(user_id);
+CREATE INDEX idx_purchase_merch_id ON purchase(merch_id);
 
 INSERT INTO merch (name, price) VALUES
 ('t-shirt', 80),

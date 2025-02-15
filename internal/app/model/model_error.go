@@ -1,4 +1,4 @@
-package router
+package model
 
 type ErrorResponse struct {
 	// Сообщение об ошибке, описывающее проблему.

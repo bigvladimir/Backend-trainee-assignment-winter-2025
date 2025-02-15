@@ -1,4 +1,4 @@
-package router
+package model
 
 type AuthRequest struct {
 	// Имя пользователя для аутентификации.
@@ -10,4 +10,14 @@ type AuthRequest struct {
 type AuthResponse struct {
 	// JWT-токен для доступа к защищенным ресурсам.
 	Token string `json:"token,omitempty"`
+}
+
+type UserCreation struct {
+	Username     string
+	PasswordHash string
+	Balance      int
+}
+
+type UserAuthInfo struct {
+	PasswordHash string
 }
