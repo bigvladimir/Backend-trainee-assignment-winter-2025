@@ -8,6 +8,7 @@ require (
 	github.com/jackc/pgconn v1.14.3
 	github.com/jackc/pgx/v4 v4.18.3
 	go.uber.org/multierr v1.5.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
