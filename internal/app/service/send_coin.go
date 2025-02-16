@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 
+	"go.uber.org/multierr"
+
 	"avito-shop-service/internal/app/model"
 	"avito-shop-service/internal/app/service/service_errors"
-
-	"go.uber.org/multierr"
 )
 
 func (s *Service) SendCoin(ctx context.Context, input model.SendCoinRequest) error {

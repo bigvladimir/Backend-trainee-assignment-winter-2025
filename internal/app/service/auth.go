@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"context"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"avito-shop-service/internal/app/model"
 	"avito-shop-service/internal/app/service/service_errors"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (s *Service) Auth(ctx context.Context, input model.AuthRequest) (model.AuthResponse, error) {

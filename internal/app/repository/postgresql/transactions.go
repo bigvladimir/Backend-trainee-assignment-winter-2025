@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v4"
+
 	"avito-shop-service/internal/app/model"
 	"avito-shop-service/internal/app/repository"
 	"avito-shop-service/internal/app/repository/rep_errors"
-
-	"github.com/jackc/pgx/v4"
 )
 
 func (s *ServiceStorage) GetMerchIDbyName(ctx context.Context, name string) (int, error) {

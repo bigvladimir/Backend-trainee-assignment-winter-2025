@@ -38,5 +38,4 @@ func unauthError(w http.ResponseWriter, errText string) {
 	}); err != nil {
 		log.Println("response error:", err)
 	}
-	return
 }

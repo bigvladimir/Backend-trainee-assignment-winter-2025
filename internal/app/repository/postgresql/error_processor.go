@@ -1,8 +1,9 @@
 package postgresql
 
 import (
-	"avito-shop-service/internal/app/repository/rep_errors"
 	"errors"
+
+	"avito-shop-service/internal/app/repository/rep_errors"
 )
 
 func (s *ServiceStorage) IsNotFound(err error) bool {
