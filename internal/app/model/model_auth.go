@@ -14,10 +14,11 @@ type AuthResponse struct {
 
 type UserCreation struct {
 	Username     string
-	PasswordHash string
+	PasswordHash []byte
 	Balance      int
 }
 
 type UserAuthInfo struct {
-	PasswordHash string
+	UserID       int
+	PasswordHash []byte
 }

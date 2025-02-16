@@ -7,7 +7,7 @@ import (
 type User struct {
 	ID           int    `db:"id"`
 	Username     string `db:"username"`
-	PasswordHash string `db:"password_hash"`
+	PasswordHash []byte `db:"password_hash"`
 	Balance      int    `db:"balance"`
 }
 
@@ -19,6 +19,7 @@ func (u *User) MapFromCreationServiceModel(d model.UserCreation) {
 
 func (u *User) MapToAuthInfoServiceModel() model.UserAuthInfo {
 	return model.UserAuthInfo{
+		UserID:       u.ID,
 		PasswordHash: u.PasswordHash,
 	}
 }

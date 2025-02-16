@@ -19,12 +19,12 @@ func (s *Service) SendCoin(ctx context.Context, input model.SendCoinRequest) err
 		func(ctxTX context.Context) error {
 			var tr model.SaveTransactionRequest
 			var err error
-			if tr.ReceiverID, err = s.stor.GetUserIDByUsername(ctx, input.ToUser); err != nil {
+			if tr.ReceiverID, err = s.stor.GetUserIDByUsername(ctxTX, input.ToUser); err != nil {
 				return err
 			}
 
 			var senderCoins int
-			if senderCoins, err = s.stor.GetUserCoinsByID(ctx, input.SenderID); err != nil {
+			if senderCoins, err = s.stor.GetUserCoinsByID(ctxTX, input.SenderID); err != nil {
 				return err
 			}
 			if senderCoins < input.Amount {
@@ -32,25 +32,25 @@ func (s *Service) SendCoin(ctx context.Context, input model.SendCoinRequest) err
 			}
 
 			var receiverCoins int
-			if receiverCoins, err = s.stor.GetUserCoinsByID(ctx, tr.ReceiverID); err != nil {
+			if receiverCoins, err = s.stor.GetUserCoinsByID(ctxTX, tr.ReceiverID); err != nil {
 				return err
 			}
 			senderCoins -= input.Amount
 			receiverCoins += input.Amount
 			if err = s.stor.UpdateUserBalance(
-				ctx, model.UpdateBalanceRequest{UserID: input.SenderID, Amount: senderCoins},
+				ctxTX, model.UpdateBalanceRequest{UserID: input.SenderID, Amount: senderCoins},
 			); err != nil {
 				return err
 			}
 			if err = s.stor.UpdateUserBalance(
-				ctx, model.UpdateBalanceRequest{UserID: tr.ReceiverID, Amount: receiverCoins},
+				ctxTX, model.UpdateBalanceRequest{UserID: tr.ReceiverID, Amount: receiverCoins},
 			); err != nil {
 				return err
 			}
 
 			tr.SenderID = input.SenderID
 			tr.Amount = input.Amount
-			if err = s.stor.AddCoinTransaction(ctx, tr); err != nil {
+			if err = s.stor.AddCoinTransaction(ctxTX, tr); err != nil {
 				return err
 			}
 

@@ -14,7 +14,7 @@ import (
 
 func (s *ServiceStorage) GetUserAuthInfoByUsername(ctx context.Context, username string) (model.UserAuthInfo, error) {
 	var user repository.User
-	err := s.qe.GetQueryEngine(ctx).Get(ctx, &user, "SELECT password_hash FROM user WHERE username=$1", username)
+	err := s.qe.GetQueryEngine(ctx).Get(ctx, &user, "SELECT id, password_hash FROM user WHERE username=$1", username)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return model.UserAuthInfo{}, rep_errors.ErrNotFound

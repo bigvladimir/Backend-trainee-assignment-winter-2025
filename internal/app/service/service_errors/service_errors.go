@@ -5,3 +5,4 @@ import (
 )
 
 var ErrInvalidReq = errors.New("invalid request")
+var ErrInvalidAuth = errors.New("invalid authentication")

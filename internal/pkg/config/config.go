@@ -3,33 +3,19 @@ package config
 import (
 	"errors"
 	"fmt"
-	"os"
-
-	"gopkg.in/yaml.v2"
 )
 
-var errUninitializedConfig = errors.New("Config not initialized")
+var errUninitializedConfig = errors.New("config not initialized")
 
 var cfg config
-
-type bdParams struct {
-	Host     string `yaml:"POSTGRES_HOST"`
-	Port     string `yaml:"POSTGRES_PORT"`
-	DBname   string `yaml:"POSTGRES_DB"`
-	User     string `yaml:"POSTGRES_USER"`
-	Password string `yaml:"POSTGRES_PASSWORD"`
-}
-
-type servSettings struct {
-	Addr string `yaml:"SERVER_ADDR"`
-}
 
 type config struct {
 	initialized bool
 
-	bd            bdParams
-	serv          servSettings
-	authSecretKey string
+	bd      bdParams
+	serv    servSettings
+	auth    tokenSettings
+	userReg userRegSettings
 }
 
 // Init необходимая инициализация конфига
@@ -40,8 +26,11 @@ func Init() error {
 	if err := cfg.setServ(); err != nil {
 		return fmt.Errorf("setServ: %w", err)
 	}
-	if err := cfg.setSecretKey(); err != nil {
-		return fmt.Errorf("setSecretKey: %w", err)
+	if err := cfg.setAuth(); err != nil {
+		return fmt.Errorf("setAuth: %w", err)
+	}
+	if err := cfg.setUserReg(); err != nil {
+		return fmt.Errorf("setUserReg: %w", err)
 	}
 
 	cfg.initialized = true
@@ -58,7 +47,8 @@ func Cfg() *config {
 
 func (c *config) GetBdDSN() string {
 	return fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", c.bd.Host, c.bd.Port, c.bd.User, c.bd.Password, c.bd.DBname,
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		c.bd.Host, c.bd.Port, c.bd.User, c.bd.Password, c.bd.DBname,
 	)
 }
 
@@ -67,55 +57,13 @@ func (c *config) GetServerAddr() string {
 }
 
 func (c *config) GetAuthSecretKey() string {
-	return c.authSecretKey
+	return c.auth.Key
 }
 
-func (c *config) setBd() error {
-	data, err := os.ReadFile("./config/bdcfg.yaml")
-	if err != nil {
-		return fmt.Errorf("os.ReadFile: %w", err)
-	}
-	bd := bdParams{}
-	err = yaml.Unmarshal(data, &bd)
-	if err != nil {
-		return fmt.Errorf("yaml.Unmarshal: %w", err)
-	}
-
-	c.bd = bd
-
-	return nil
+func (c *config) GetAuthTokenTTL() int {
+	return c.auth.MinutesTTL
 }
 
-func (c *config) setServ() error {
-	data, err := os.ReadFile("./config/servcfg.yaml")
-	if err != nil {
-		return fmt.Errorf("os.ReadFile: %w", err)
-	}
-	serv := servSettings{}
-	err = yaml.Unmarshal(data, &serv)
-	if err != nil {
-		return fmt.Errorf("yaml.Unmarshal: %w", err)
-	}
-
-	c.serv = serv
-
-	return nil
-}
-
-func (c *config) setSecretKey() error {
-	data, err := os.ReadFile("./config/secretkey.yaml")
-	if err != nil {
-		return fmt.Errorf("os.ReadFile: %w", err)
-	}
-	k := struct {
-		Key string `yaml:"SECRET_KEY"`
-	}{}
-	err = yaml.Unmarshal(data, &k)
-	if err != nil {
-		return fmt.Errorf("yaml.Unmarshal: %w", err)
-	}
-
-	c.authSecretKey = k.Key
-
-	return nil
+func (c *config) GetUserStartBalance() int {
+	return c.userReg.startBalance
 }

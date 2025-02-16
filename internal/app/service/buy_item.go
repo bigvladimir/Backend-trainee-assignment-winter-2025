@@ -19,15 +19,15 @@ func (s *Service) BuyItem(ctx context.Context, input model.PurchaseRequest) erro
 		func(ctxTX context.Context) error {
 			var err error
 			var merchID int
-			if merchID, err = s.stor.GetMerchIDbyName(ctx, input.Type_); err != nil {
+			if merchID, err = s.stor.GetMerchIDbyName(ctxTX, input.Type_); err != nil {
 				return err
 			}
 			var coins int
-			if coins, err = s.stor.GetUserCoinsByID(ctx, input.UserID); err != nil {
+			if coins, err = s.stor.GetUserCoinsByID(ctxTX, input.UserID); err != nil {
 				return err
 			}
 			var price int
-			if price, err = s.stor.GetMerchPricebyID(ctx, merchID); err != nil {
+			if price, err = s.stor.GetMerchPricebyID(ctxTX, merchID); err != nil {
 				return err
 			}
 			if coins < price {
@@ -35,13 +35,13 @@ func (s *Service) BuyItem(ctx context.Context, input model.PurchaseRequest) erro
 			}
 
 			if err = s.stor.UpdateUserBalance(
-				ctx, model.UpdateBalanceRequest{UserID: input.UserID, Amount: (coins - price)},
+				ctxTX, model.UpdateBalanceRequest{UserID: input.UserID, Amount: (coins - price)},
 			); err != nil {
 				return err
 			}
 
 			if err = s.stor.AddPurchase(
-				ctx, model.SavePurchaseRequest{UserID: input.UserID, MerchID: merchID},
+				ctxTX, model.SavePurchaseRequest{UserID: input.UserID, MerchID: merchID},
 			); err != nil {
 				return err
 			}
